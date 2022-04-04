@@ -1,15 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import SearchIcon from '../images/Search Icon.png'
+import { useNavigate } from 'react-router-dom'
 const SearchBar = () => {
+  const [keyword, setKeyword] = useState("")
+  const navigate = useNavigate()
   return (
       <Search>
           <div style={{display:"flex",width:"80%",alignItems:"center"}}>
           <Icon src={SearchIcon} />
-          <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' />
+          <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>setKeyword(e.target.value)}/>
           </div>
         
-          <SearchButton >시작하기</SearchButton>
+          <SearchButton onClick={()=>navigate("/search")}>시작하기</SearchButton>
     </Search>
   )
 }
@@ -49,6 +52,6 @@ align-items:center;
 font-size:18px;
 font-weight:700;
 color:#FFFFFF;
-
+cursor:pointer;
 `
 export default SearchBar

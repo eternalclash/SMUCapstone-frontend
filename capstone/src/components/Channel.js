@@ -8,10 +8,12 @@ import image5 from '../images/PAIK 5 Image.png'
 import image6 from '../images/PAIK 6 Image.png'
 import ViewIcon from '../images/View Icon.png'
 import CommentsIcon from '../images/Comments Icon.png'
+import { useNavigate } from 'react-router-dom'
 const Channel = () => {
+    const navigate = useNavigate()
     return (
         <div style={{display:"flex",flexWrap:"wrap",flexDirection:"row",justifyContent:'center'}}>
-            <div style={{ margin: "0 20px 30px 20px"}}>
+            <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/detail")}>
             <MainImage src={image1}/>
            <Main>
                     <Info>
