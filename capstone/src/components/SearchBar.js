@@ -1,12 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import axios from 'axios'
+
 import SearchIcon from '../images/Search Icon.png'
 import { useNavigate } from 'react-router-dom'
-const SearchBar = () => {
+import { useDispatch, useSelector } from 'react-redux'
+import { actionCreators as channelActions } from '../redux/modules/channel'
+const SearchBar = (props) => {
   const [keyword, setKeyword] = useState("")
+  
+  
   const navigate = useNavigate()
+
+  
+
+
   return (
-      <Search>
+      <Search onClick={()=>props.setModal(!props.modal)}>
           <div style={{display:"flex",width:"80%",alignItems:"center"}}>
           <Icon src={SearchIcon} />
           <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>setKeyword(e.target.value)}/>
@@ -23,7 +33,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 position:absolute;
-top:35%;
+top:20%;
 width:60%;
 height:50px;
 border: 3.5px solid #4187C8;
