@@ -9,9 +9,7 @@ const Header = () => {
           <LeftText>유튜브 댓글 분석기</LeftText>
           </Left>
           <Right>
-          <RightText>My</RightText>
-          <RightText>탐색하기</RightText>
-          <RightText>로그인</RightText>     
+     
           </Right>
  
     </Main>

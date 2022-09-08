@@ -18,11 +18,11 @@ const SearchBar = (props) => {
   return (
       <Search onClick={()=>props.setModal(!props.modal)}>
           <div style={{display:"flex",width:"80%",alignItems:"center"}}>
-          <Icon src={SearchIcon} />
+       
           <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>setKeyword(e.target.value)}/>
           </div>
         
-          <SearchButton onClick={()=>navigate("/search")}>시작하기</SearchButton>
+          <SearchButton onClick={()=>navigate("/search")}>   <Icon src={SearchIcon} /></SearchButton>
     </Search>
   )
 }

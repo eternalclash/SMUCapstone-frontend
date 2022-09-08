@@ -42,11 +42,11 @@ const MainBody = () => {
    
       <Search onClick={()=>setModal(!modal)}>
           <div style={{display:"flex",width:"80%",alignItems:"center"}}>
-          <Icon src={SearchIcon} />
+          
           <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>setKeyword(e.target.value)}/>
           </div>
         
-          <SearchButton onClick={()=>navigate("/search")}>시작하기</SearchButton>
+          <SearchButton onClick={()=>navigate("/search")}><Icon src={SearchIcon} /></SearchButton>
     </Search>
      
       {
@@ -56,10 +56,12 @@ const MainBody = () => {
                  return (
                    <Flex onClick={() => navigate('/search', {
                      state: {
-                         youtubers: e.channelId
+                         youtubers: e.channelId,
+                         channelName: e.channelname,
+                         thumbnail:e.thumbnail
                        }
                      })}>
-                         <img style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.thumbnail}/>
+                         <img referrerpolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.thumbnail}/>
                          {e.channelname}
                          </Flex>
               )
@@ -81,23 +83,25 @@ const MainBody = () => {
 }
 
 const Main = styled.div`
-background-color:black;
-height:40em;
+
+margin-top:10%;
 display:flex;
 justify-content:center;
 align-items:center;
+flex-direction:column;
 `
 const Search = styled.div`
 background:white;
 display:flex;
 justify-content:space-between;
 align-items:center;
-position:absolute;
-top:20%;
+
+
 width:60%;
 height:50px;
-border: 3.5px solid #4187C8;
-padding: 0px 10px;
+border: 1px solid #6667AB;
+padding: 0px 0px 0px 10px;
+border-radius:17px;
 `
 const Icon = styled.img`
 width:25px;
@@ -113,9 +117,9 @@ margin-left:10px;
 
 const SearchButton = styled.div`
 background: #4187C8;
-border-radius: 5px;
-width:116px;
-height:37px;
+border-radius: 0 17px 17px 0;
+width:60px;
+height:50px;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -125,15 +129,15 @@ color:#FFFFFF;
 cursor:pointer;
 `
 const Box = styled.div`
-  width:auto;
-  position:fixed;
+  width:60%;
+  position:absolute;
   height:50%;
   top:30%;
   background-color: white;
   overflow-y: auto;
   z-index:99999;
   display:flex;
-  justify-content: center;
+  justify-content: flex-start;
 `
 const Flex = styled.div`
 display:flex;
