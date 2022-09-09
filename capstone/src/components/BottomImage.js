@@ -6,15 +6,46 @@ import Add1 from '../images/Add Icon.png'
 import Add2 from '../images/Add Icon (1).png'
 import Play from '../images/Play Icon.png'
 import styled from 'styled-components'
+import { useState,useEffect } from 'react'
+import axios from 'axios'
 const BottomImage = () => {
+  const [channel,setChannel] = useState()
+  const [video,setVideo] = useState()
+  useEffect(()=>{
+    const fetch = async () => {
+      try {
+   
+        const response = await axios.get(
+          `http://34.64.56.32:5000/popular`, null, {
+            headers: {
+             
+              "Access-Control-Allow-Origin":"*",
+            }
+          }
+          , 
+        )
+        setChannel(response.data.channel)
+        setVideo(response.data.video)
+       
+      }
+     catch (error) {
+        console.log(error)
+      }
+    }
+      fetch();
+
+  }
+  
+  ,[])
     return (
+      channel&&video?
         <Main >
           <Left>
             <LeftFirstWord><img src={Add1} width='24em'/><div style={{paddingTop:'6px',marginLeft:'10px'}}>많이 분석한 채널</div></LeftFirstWord>
             <LeftDown>
-              <ChannelImage src={SBS}/>
-              <ChannelName>MBCkpop</ChannelName>
-              <ChannelView><img src={Add2} width='20em'/><div style={{marginLeft:'5px'}}>9.82M</div></ChannelView>
+              <ChannelImage src={channel.thumbnail}/>
+              <ChannelName>{channel.channelName}</ChannelName>
+              <ChannelView><img src={Add2} width='20em'/><div style={{marginLeft:'5px'}}>{channel.channelHits}</div></ChannelView>
             </LeftDown>
           </Left>
           <Right>
@@ -23,15 +54,17 @@ const BottomImage = () => {
             </div>
             
             <RightDown>
-              <RightImage src={SBS}/>
+              <RightImage src={video.thumbnail}/>
               <ChannelView2>
-              <ChannelView2>예능연구소 4K 아이브 이서 직캠 'LOVE DIVE' (IVE LEESEO FANSCAM) @Show! MusicCore 220409</ChannelView2>
+              <ChannelView2>{video.video_name}</ChannelView2>
               </ChannelView2>
              
             </RightDown>
           </Right>
 
     </Main>
+    :
+    <div>준비중입니다</div>
   )
 }
 const Main = styled.div`

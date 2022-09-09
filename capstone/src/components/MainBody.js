@@ -17,7 +17,7 @@ const MainBody = () => {
         try {
      
           const response = await axios.get(
-            `http://34.64.56.32:5000/channels?q=${keyword}&maxResults=5`, null, {
+            `http://34.64.56.32:5000/youtubers`, null, {
               headers: {
                
                 "Access-Control-Allow-Origin":"*",
@@ -25,8 +25,10 @@ const MainBody = () => {
             }
             , 
           )
-          console.log(response.data.items)
-          setData(response.data.items)
+          console.log(response.data)
+          
+          setData(response.data.result)
+          console.log(data)
         }
        catch (error) {
           console.log(error)
@@ -54,15 +56,15 @@ const MainBody = () => {
         {data ? <div>{
             data.map((e,index) => {
                  return (
-                   <Flex onClick={() => navigate('/search', {
+                   <Flex key={index} onClick={() => navigate('/search', {
                      state: {
-                         youtubers: e.channelId,
-                         channelName: e.channelname,
-                         thumbnail:e.thumbnail
+                         youtubers: e.id,
+                         channelName: e.channel,
+                         thumbnail:e.profile
                        }
                      })}>
-                         <img referrerpolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.thumbnail}/>
-                         {e.channelname}
+                         <img referrerPolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.profile}/>
+                         {e.channel}
                          </Flex>
               )
           })  

@@ -2,12 +2,8 @@ import React,{useEffect,useState} from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import he from 'he'
-import image1 from '../images/PAIK 1 Image.png'
-import image2 from '../images/PAIK 2 Image.png'
-import image3 from '../images/PAIK 3 Image.png'
-import image4 from '../images/PAIK 4 Image.png'
-import image5 from '../images/PAIK 5 Image.png'
-import image6 from '../images/PAIK 6 Image.png'
+import RingLoader from 'react-spinners/RingLoader'
+import More from '../images/More.png'
 import ViewIcon from '../images/View Icon.png'
 import CommentsIcon from '../images/Comments Icon.png'
 import { useNavigate,useLocation } from 'react-router-dom'
@@ -42,29 +38,7 @@ const Channel = () => {
           `http://34.64.56.32:5000/youtubers`
         )
         console.log(response2)
-        return (
-          <div style={{ display: "flex", flexWrap: "wrap", flexDirection: "row", justifyContent: 'center' }}>
-            {
-             
-                data.map((e, idx) => {
-                  return(
-                <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/detail")}>
-                <MainImage src={e.thumbnail.split('/')[0]+'//'+e.thumbnail.split('/')[2]+'/'+e.thumbnail.split('/')[3]+'/'+e.thumbnail.split('/')[4]+'/hq720.jpg'}/>
-               <Main>
-                        <Info>
-                            <Icon src={ViewIcon} />{e.hits}
-                            <Icon src={CommentsIcon}/> {e.comment_num}
-                        </Info>
-                        <div style={{ marginTop: "10px"}}></div>
-                        <MainText>{e.video_name}</MainText>
-                        <MainText>{}</MainText>
-              </Main>
-              </div>
-                )
-              }) 
-            }
-            </div>
-            )
+       
       }
       
      catch (error) {
@@ -81,7 +55,11 @@ const Channel = () => {
           data ? 
             data.map((e, idx) => {
               return(
-            <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/detail")}>
+            <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/detail",{state:{
+               thumbnail:location.state.thumbnail,
+               channelName:location.state.channelName,
+               youtubers:location.state.youtubers
+            }})}>
             <MainImage src={e.thumbnail.split('/')[0]+'//'+e.thumbnail.split('/')[2]+'/'+e.thumbnail.split('/')[3]+'/'+e.thumbnail.split('/')[4]+'/hq720.jpg'}/>
            <Main>
                     <Info>
@@ -92,26 +70,58 @@ const Channel = () => {
                     <MainText>{e.video_name}</MainText>
                     <MainText>{}</MainText>
           </Main>
+      
+      
           </div>
             )
-          }) 
+          })
+       
+          
             :
             <ErrorFind>
-              <img src={location.state.thumbnail} style={{"width":"150px",height:"150px",borderRadius:"50%"}}></img>
-              <div style={{marginTop:"30px",fontSize:"22px"}}>현재"{notFind}"서비스를 제공하지 않습니다.</div>
+               <RingLoader
+          color="black"
+          height={30}
+          width={30}
+          radius={2}
+          margin={2}
+        />
+              <div style={{marginTop:"30px",fontSize:"22px"}}>로딩중입니다. 잠시만 기다려주세요</div>
 
-              <div style={{fontSize:"25px",marginTop:"30px",textDecoration:"underline",cursor:"pointer"}} onClick={() => navigate('/', {
-      
-                     })}>다른 서비스 찾아보기</div>
+            
               </ErrorFind>
          }
+  {
+data && <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/")}>
+<MainImage src={More}/>
+<Main>
+        <Info>
+
+        </Info>
+        <div style={{ marginTop: "10px"}}></div>
+        <MainText>더 많은 {location.state.channelName}동영상은 준비 중입니다.</MainText>
+       
+</Main>
+</div> 
+  }
+
           
-            
+     
         </div>
         
    
   )
 }
+
+const Home = styled.div`
+position:fixed;
+right:2%;
+bottom:3%;
+width:100px;
+height:100px;
+background-color:blue;
+border-radius:50%;
+`
 
 const Main = styled.div`
 width:350px;

@@ -2,21 +2,29 @@ import React from 'react'
 import styled from 'styled-components'
 import Logo from '../images/Youtube Logo.png'
 import PAIK from '../images/PAIK Image.png'
-import { useNavigate } from "react-router-dom"
+import { useNavigate,useLocation } from "react-router-dom"
 const DetailHeader = () => {
     const navigate=useNavigate()
+    const location = useLocation()
+    console.log(location.state)
   return (
     <Main>
           <Left onClick={()=>navigate("/")}>
           <LeftIcon src={Logo}/>
           <LeftText>유튜브 댓글 분석기</LeftText>
           </Left>
-          <Mid onClick={()=>navigate("/search")}>
-          <MidIcon src={PAIK} />
-          백종원의 요리비책
+          <Mid onClick={()=>navigate("/search",{
+            state: {
+              thumbnail:location.state.thumnail,
+              channelName:location.state.channelName,
+              youtubers:location.state.youtubers,
+            }
+          })}>
+          <MidIcon referrerPolicy="no-referrer" src={location.state.thumbnail} />
+          {location.state.channelName}
           </Mid>
           <Right>
-          <RightText>로그아웃</RightText>   
+    
           </Right>
  
     </Main>
@@ -43,6 +51,7 @@ font-weight:700;
 const LeftIcon = styled.img`
 width:40px;
 height:40px;
+border-radius:17px;
 margin-right:10px;
 `
 const Mid = styled.div`
@@ -57,6 +66,7 @@ const MidIcon = styled.img`
 width:60px;
 height:60px;
 margin-right:10px;
+border-radius:50%;
 `
 const Right = styled.div`
 display:flex;
