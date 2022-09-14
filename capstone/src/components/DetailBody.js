@@ -10,16 +10,21 @@ import PAIK7 from '../images/PAIK 7 1mage.png'
 import PAIK8 from '../images/PAIK 8 Image.png'
 import PAIK9 from '../images/PAIK 9 Image.png'
 import axios from 'axios'
+import { useNavigate,useLocation } from 'react-router-dom'
+import RingLoader from 'react-spinners/RingLoader'
+
 const DetailBody = () => {
         const [data,setData] = useState()
+        const [data2,setData2] = useState()
         const [keyword,setKeyword] = useState()
         const [comment,setComment] = useState([])
+        const location=useLocation()
         useEffect(() => {
                 const fetch = async () => {
                   try {
                
                     const response = await axios.get(
-                      `http://34.64.56.32:5000/analyze`, null, {
+                      `http://34.64.56.32:2222/analyze?videoId=${location.state.videoId}`, null, {
                         headers: {
                          
                           "Access-Control-Allow-Origin":"*",
@@ -27,7 +32,16 @@ const DetailBody = () => {
                       }
                       , 
                     )
-                    console.log(response.data.bigdata.comments)
+                    const response2 =  await axios.get(
+                      `http://34.64.56.32:5000/analyze?videoId=${location.state.videoId}`, null, {
+                        headers: {
+                         
+                          "Access-Control-Allow-Origin":"*",
+                        }
+                      }
+                      , 
+                    )
+                 
                     let sortobj = [];
                     for (let number in response.data.bigdata.comments) {
                         sortobj.push([number,response.data.bigdata.comments[number]])
@@ -36,9 +50,14 @@ const DetailBody = () => {
                         return  b[1] - a[1]
                     })
                     console.log(response.data)
+                    console.log(response2.data)
                     setKeyword(sortobj)
                 
                     setData(response.data)
+                    setData2(response2.data)
+                    console.log(data)
+                    console.log(data2)
+                    
             
                 //     console.log(response.data.timestamp[0].Object.keys(response.data.timestamp[0])[0].comments)
                   }
@@ -49,11 +68,9 @@ const DetailBody = () => {
                   fetch();
             }, [])
   return (
-        data?
+        data2&&data?
       <Grid>
-       <One pict={data.thumbnail.url}>
-       
-       </One>
+       <DetailImage4 src={data2.thumbnail.url} /> 
               
               <LikeComment>
               <DetailHead>
@@ -75,11 +92,11 @@ const DetailBody = () => {
               </DetailHead>
               <ProgressBar>
               
-               <Progress percent={data.sentimental.pos}>
-                {data.sentimental.pos}%
+               <Progress percent={Math.round(Number(data.sentimental.pos))}>
+                {Math.round(Number(data.sentimental.pos))}%
                 </Progress>
-                <Progress2 percent={data.sentimental.neg}>
-                {data.sentimental.neg}%
+                <Progress2 percent={Math.round(data.sentimental.neg)}>
+                {Math.round(Number(data.sentimental.neg))}%
                 </Progress2>
               </ProgressBar>
               </LikeComment>    
@@ -104,20 +121,22 @@ const DetailBody = () => {
                       가장 많이 등장한 단어
                       </DetailHeadText>
                         </Flex>
+                        <div style={{width:"100%",height:"50%",overflow:"scroll",overflowX: "hidden",display:"flex",justifyContent:"",flexDirection:"column",alignItems:"center"}}>
                         {  
                                 
                   
                                 keyword.map((e,index)=>{
-                                        if (index<5)
+                                    
                                         return (
-
-                                                <div style={{fontSize:25,marginBottom:"10px"}}>
-                                                   {index+1}.{e[0]} {e[1]}회
+                                  
+                                                <div style={{fontSize:25,marginBottom:"10px",display:"flex",justifyContent:'flex-start'}}>
+                                                   {index+1}위 {e[0]} {e[1]}회
                                                 </div>
                                         )
                                 })
                              
                         }
+                        </div>
                      
                      </Half>
                      
@@ -133,9 +152,9 @@ const DetailBody = () => {
                       </DetailHeadText>
                      
                   </DetailHead>
-               <DetailImage2  src={data.recommend[0].thumb} onClick={()=> window.open(`${data.recommend[0].url}`,'_blank')}/> 
+               <DetailImage2  src={data2.recommend[0].thumb} onClick={()=> window.open(`${data2.recommend[0].url}`,'_blank')}/> 
                         
-            <DetailImage2 src={data.recommend[1].thumb} onClick={()=> window.open(`${data.recommend[1].url}`,'_blank')}/>       
+            <DetailImage2 src={data2.recommend[1].thumb} onClick={()=> window.open(`${data2.recommend[1].url}`,'_blank')}/>       
  
               
                
@@ -148,17 +167,19 @@ const DetailBody = () => {
                    가장 많이 언급된 구간
                     </DetailHeadText>
                       </Flex>
+                      <div style={{width:"100%",height:"50%",overflow:"scroll",overflowX: "hidden",display:"flex",justifyContent:"",flexDirection:"column",alignItems:"center"}}>
                       {
                         data.timestamp.map((e,index)=>{
                                 return(
-                                        <div style={{fontSize:25,marginBottom:"10px",cursor:"pointer"}} onClick={()=>{
-                                        setComment(data.timestamp[index][Object.keys(e)].comments)
+                                        <div style={{fontSize:25,marginBottom:"10px",cursor:"pointer",  textDecoration: "underline"}} onClick={()=>{
+                                        setComment(data.timestamp[index][Object.keys(e)].comment)
                                         }}>
                                          {Object.keys(e)}분
                                         </div>
                                 )
                         })
                       }
+                      </div>
                       </Half>
                   
                     <Half> 
@@ -168,6 +189,7 @@ const DetailBody = () => {
                     구간에 대한 댓글
                     </DetailHeadText>
                       </Flex>
+                      <div style={{width:"100%",height:"80em"}}>
                       {  
                               
                 
@@ -182,6 +204,9 @@ const DetailBody = () => {
                               })
                            
                       }
+
+                      </div>
+                    
                    
                    </Half>
                    
@@ -191,8 +216,19 @@ const DetailBody = () => {
         
     </Grid>
     :
-    <Grid>
-    </Grid>
+    <Flex3> <ErrorFind>
+    <RingLoader
+color="black"
+height={30}
+width={30}
+radius={2}
+margin={2}
+/>
+   <div style={{marginTop:"30px",fontSize:"22px"}}>로딩중입니다. 잠시만 기다려주세요</div>
+
+ 
+   </ErrorFind></Flex3>
+   
   )
 }
 const One = styled.div`
@@ -224,6 +260,7 @@ align-items:center;
 `
 const Half = styled.div`
 width:50%;
+height:350px;
 display:flex;
 justify-content:flex-start;
 align-items:center;
@@ -242,6 +279,18 @@ const Progress = styled.div`
     align-items:center;
 
 `
+const ErrorFind = styled.div`
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+border-radius:17px;
+margin-top:10em;
+width:50em;
+height:29em;
+background-color:white;
+
+`
 const Progress2 = styled.div`
 width: ${(props)=> (props.percent)}%;  
     height: 100px;
@@ -257,6 +306,12 @@ width: ${(props)=> (props.percent)}%;
 const Flex = styled.div`
 display:flex;
 justify-content:space-between;
+align-items:center;
+margin: 20px;
+`
+const Flex3 = styled.div`
+display:flex;
+justify-content:center;
 align-items:center;
 margin: 20px;
 `
@@ -305,6 +360,13 @@ const DetailImage2 = styled.img`
 width:100%;
 height:45%;
 margin:10px 0px;
+border-radius:15px;
+cursor:pointer;
+`
+const DetailImage4 = styled.img`
+width:100%;
+height:100%;
+
 border-radius:15px;
 cursor:pointer;
 `

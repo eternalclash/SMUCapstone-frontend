@@ -27,6 +27,7 @@ const Channel = () => {
           }
           , 
         )
+        console.log(response.data)
         console.log(response.data.data)
         response.data.data.map((e,index)=>e.video_name=he.decode(e.video_name) 
         )
@@ -58,7 +59,8 @@ const Channel = () => {
             <div style={{ margin: "0 20px 30px 20px", cursor:"pointer"}} onClick={()=>navigate("/detail",{state:{
                thumbnail:location.state.thumbnail,
                channelName:location.state.channelName,
-               youtubers:location.state.youtubers
+               youtubers:location.state.youtubers,
+               videoId: e.id
             }})}>
             <MainImage src={e.thumbnail.split('/')[0]+'//'+e.thumbnail.split('/')[2]+'/'+e.thumbnail.split('/')[3]+'/'+e.thumbnail.split('/')[4]+'/hq720.jpg'}/>
            <Main>
