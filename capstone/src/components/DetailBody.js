@@ -85,7 +85,7 @@ const DetailBody = () => {
                   setData2(response2.data)
                     console.log(data2)
                   
-          
+                    
               //     console.log(response.data.timestamp[0].Object.keys(response.data.timestamp[0])[0].comments)
                 }
                catch (error) {
@@ -178,7 +178,7 @@ margin={2}
                       빅데이터를 통해 알아보는 키워드
                       </DetailHeadText>
                         </Flex>
-                        <DetailImage3 onClick={()=>{setModal(!modal)}} referrerPolicy="no-referrer" src={data2.bigdata.image}/>
+                        <DetailImage3 onClick={()=>window.open(`${data2.bigdata.image}`)} referrerPolicy="no-referrer" src={data2.bigdata.image}/>
                         </Half>
                     
                       <Half> 
@@ -239,7 +239,9 @@ margin={2}
                         data2.timestamp.map((e,index)=>{
                                 return(
                                         <div style={{fontSize:25,marginBottom:"10px",cursor:"pointer",  textDecoration: "underline"}} onClick={()=>{
-                                        setComment(data.timestamp[index][Object.keys(e)].comment)
+                                       
+                                          setComment(data2.timestamp[index][Object.keys(e)].comment)
+                                      
                                         }}>
                                          {Object.keys(e)}분
                                         </div>
@@ -465,7 +467,7 @@ border-radius:15px;
 cursor:pointer;
 `
 const DetailImage3 = styled.img`
-
+cursor:pointer;
 height: 220px;
 border-radius:15px;
 `

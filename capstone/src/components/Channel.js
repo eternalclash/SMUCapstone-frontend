@@ -62,7 +62,7 @@ const Channel = () => {
                youtubers:location.state.youtubers,
                videoId: e.id
             }})}>
-            <MainImage src={e.thumbnail.split('/')[0]+'//'+e.thumbnail.split('/')[2]+'/'+e.thumbnail.split('/')[3]+'/'+e.thumbnail.split('/')[4]+'/hq720.jpg'}/>
+            <MainImage src={e.thumbnail.split('/')[0]+'//'+e.thumbnail.split('/')[2]+'/'+e.thumbnail.split('/')[3]+'/'+e.thumbnail.split('/')[4]+'/hqdefault.jpg'}/>
            <Main>
                     <Info>
                         <Icon src={ViewIcon} />{e.hits}

@@ -105,8 +105,8 @@ const MainBody = () => {
                    <Flex key={index} onClick={() => navigate('/search', {
                      state: {
                          youtubers: e.channelId,
-                         channelName: e.channel,
-                         thumbnail:e.profile
+                         channelName: e.channelname,
+                         thumbnail:e.thumbnail
                        }
                      })}>
                          <img referrerPolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.thumbnail}/>
