@@ -7,8 +7,10 @@ import Add2 from '../images/Add Icon (1).png'
 import Play from '../images/Play Icon.png'
 import styled from 'styled-components'
 import { useState,useEffect } from 'react'
+import { useNavigate,useLocation } from "react-router-dom"
 import axios from 'axios'
 const BottomImage = () => {
+  const navigate = useNavigate()
   const [channel,setChannel] = useState()
   const [video,setVideo] = useState()
   useEffect(()=>{
@@ -26,6 +28,7 @@ const BottomImage = () => {
         )
         setChannel(response.data.channel)
         setVideo(response.data.video)
+        console.log(response.data)
        
       }
      catch (error) {
@@ -40,15 +43,36 @@ const BottomImage = () => {
     return (
       channel&&video?
         <Main >
-          <Left>
-            <LeftFirstWord><img src={Add1} width='24em'/><div style={{paddingTop:'6px',marginLeft:'10px'}}>많이 분석한 채널</div></LeftFirstWord>
-            <LeftDown>
+          <Left onClick={()=>
+          navigate("/search",{
+                         state: {
+                          youtubers: channel.channelId,
+                          channelName: channel.channelName,
+                          thumbnail:channel.thumbnail
+                        }
+            }
+            )
+    
+            }>
+            <LeftFirstWord ><img src={Add1} width='24em'/><div style={{paddingTop:'6px',marginLeft:'10px'}}>많이 분석한 채널</div></LeftFirstWord>
+            <LeftDown >
               <ChannelImage src={channel.thumbnail}/>
               <ChannelName>{channel.channelName}</ChannelName>
               <ChannelView><img src={Add2} width='20em'/><div style={{marginLeft:'5px'}}>{channel.channelHits}</div></ChannelView>
             </LeftDown>
           </Left>
-          <Right>
+          <Right
+          onClick={()=>
+            navigate("/detail",{
+                           state: {
+                            videoId: video.id,
+                            channelName: video.channelInfo.channelName,
+                            thumbnail:video.channelInfo.thumbnail
+                          }
+              }
+              )
+      
+              }>
             <div style={{display:'flex', justfiyContent:'start',alignItems:'start'}}>
             <RightFirstWord><img src={Play} width='24em'/><div style={{paddingTop:'6px',marginLeft:'10px'}}>많이 분석한 동영상</div></RightFirstWord>
             </div>
@@ -77,12 +101,12 @@ height:25em;
 
 align-items:center;
 border-radius:17px;
-z-index:-1;
+
 `
 const Left = styled.div`
 width:100%;
 height:400px;
-
+cursor:pointer;
 justify-content:center;
 align-items:center;
 display:flex;
@@ -91,7 +115,7 @@ flex-direction:column;
 const Right = styled.div`
 
 height:400px;
-
+cursor:pointer;
 justify-content:center;
 align-items:center;
 display:flex;

@@ -18,6 +18,7 @@ const DetailBody = () => {
         const [data2,setData2] = useState()
         const [keyword,setKeyword] = useState()
         const [comment,setComment] = useState([])
+        const [modal,setModal] = useState(false);
         const location=useLocation()
         useEffect(() => {
                 const fetch = async () => {
@@ -32,31 +33,17 @@ const DetailBody = () => {
                       }
                       , 
                     )
-                    const response2 =  await axios.get(
-                      `http://34.64.56.32:5000/analyze?videoId=${location.state.videoId}`, null, {
-                        headers: {
-                         
-                          "Access-Control-Allow-Origin":"*",
-                        }
-                      }
-                      , 
-                    )
+                  
                  
-                    let sortobj = [];
-                    for (let number in response.data.bigdata.comments) {
-                        sortobj.push([number,response.data.bigdata.comments[number]])
-                    }
-                    sortobj=sortobj.sort(function(a,b) {
-                        return  b[1] - a[1]
-                    })
+                  
                     console.log(response.data)
-                    console.log(response2.data)
-                    setKeyword(sortobj)
+       
+               
                 
                     setData(response.data)
-                    setData2(response2.data)
+              
                     console.log(data)
-                    console.log(data2)
+         
                     
             
                 //     console.log(response.data.timestamp[0].Object.keys(response.data.timestamp[0])[0].comments)
@@ -67,39 +54,119 @@ const DetailBody = () => {
                 }
                   fetch();
             }, [])
+            useEffect(() => {
+              const fetch = async () => {
+                try {
+             
+            
+                  const response2 =  await axios.get(
+                    `http://34.64.56.32:5000/analyze?videoId=${location.state.videoId}`, null, {
+                      headers: {
+                       
+                        "Access-Control-Allow-Origin":"*",
+                      }
+                    }
+                    , 
+                  )
+               
+                  let sortobj = [];
+                  for (let number in response2.data.bigdata.comments) {
+                      sortobj.push([number,response2.data.bigdata.comments[number]])
+                  }
+                  sortobj=sortobj.sort(function(a,b) {
+                      return  b[1] - a[1]
+                  })
+                  setKeyword(sortobj)
+                
+                  console.log(response2.data)
+             
+              
+                 
+                  setData2(response2.data)
+                    console.log(data2)
+                  
+          
+              //     console.log(response.data.timestamp[0].Object.keys(response.data.timestamp[0])[0].comments)
+                }
+               catch (error) {
+                  console.log(error)
+                }
+              }
+                fetch();
+          }, [])
   return (
-        data2&&data?
+        data2?
       <Grid>
+        {modal&&<Modal></Modal>}
        <DetailImage4 src={data2.thumbnail.url} /> 
-              
-              <LikeComment>
-              <DetailHead>
-                      <DetailHeadImage src={Like} />   
-                      <DetailHeadText>
-                      긍정적인 댓글
-                      </DetailHeadText>
-                     
-                      <DetailHeadText2>
-                       VS
-                      </DetailHeadText2>
-                      <DetailHeadImage src={Dislike} />   
-                      <DetailHeadText>
-                      부정적인 댓글
-                      </DetailHeadText>
-                     
-              
-                     
-              </DetailHead>
-              <ProgressBar>
-              
-               <Progress percent={Math.round(Number(data.sentimental.pos))}>
-                {Math.round(Number(data.sentimental.pos))}%
+              {
+                data?<LikeComment>
+                <DetailHead>
+                   
+                        <DetailHeadText color="#4F98FF">
+                        긍정적인 댓글
+                        </DetailHeadText>
+                       
+                        <DetailHeadText2>
+                         VS
+                        </DetailHeadText2>
+                  
+                        <DetailHeadText color='gray'>
+                        중립적인 댓글
+                        </DetailHeadText>
+                        <DetailHeadText2>
+                         VS
+                        </DetailHeadText2>
+                        <DetailHeadText>
+                        부정적인 댓글
+                        </DetailHeadText>
+                       
+                
+                       
+                </DetailHead>
+                <ProgressBar>
+  
+                <Progress percent={Math.round(Number(data.sentimental.pos))}>
                 </Progress>
-                <Progress2 percent={Math.round(data.sentimental.neg)}>
-                {Math.round(Number(data.sentimental.neg))}%
-                </Progress2>
-              </ProgressBar>
-              </LikeComment>    
+  
+                <div style={{color:"#4F98FF"}}>
+                {Math.round(Number(data.sentimental.pos))}%
+                </div>
+            
+                
+                  </ProgressBar>
+                  <ProgressBar>
+                  <Progress2 percent={Math.round(data.sentimental.neut)}>
+                 
+                  </Progress2>
+  
+                 <div style={{color:"gray"}}>
+                 {Math.round(Number(data.sentimental.neut))}%
+                 </div>
+                  </ProgressBar>
+                
+                  <ProgressBar>
+                  <Progress3 percent={Math.round(data.sentimental.neg)}>
+   
+                  </Progress3>
+                  <div>
+                  {Math.round(Number(data.sentimental.neg))}%
+                  </div>
+                  </ProgressBar>
+                  
+           
+                </LikeComment>    :<Flex2>
+                <RingLoader
+color="black"
+height={50}
+width={50}
+radius={2}
+margin={2}
+/>
+<div style={{marginTop:"20px"}}> 긍부정 댓글 분석중</div>
+                </Flex2>
+              }
+              
              
  
        
@@ -111,7 +178,7 @@ const DetailBody = () => {
                       빅데이터를 통해 알아보는 키워드
                       </DetailHeadText>
                         </Flex>
-                        <DetailImage3 referrerPolicy="no-referrer" src={data.bigdata.image}/>
+                        <DetailImage3 onClick={()=>{setModal(!modal)}} referrerPolicy="no-referrer" src={data2.bigdata.image}/>
                         </Half>
                     
                       <Half> 
@@ -169,7 +236,7 @@ const DetailBody = () => {
                       </Flex>
                       <div style={{width:"100%",height:"50%",overflow:"scroll",overflowX: "hidden",display:"flex",justifyContent:"",flexDirection:"column",alignItems:"center"}}>
                       {
-                        data.timestamp.map((e,index)=>{
+                        data2.timestamp.map((e,index)=>{
                                 return(
                                         <div style={{fontSize:25,marginBottom:"10px",cursor:"pointer",  textDecoration: "underline"}} onClick={()=>{
                                         setComment(data.timestamp[index][Object.keys(e)].comment)
@@ -231,6 +298,15 @@ margin={2}
    
   )
 }
+
+const Modal = styled.div`
+width:60%
+height:300px;
+position:absolute:
+top:20%;
+left:20%;
+`
+
 const One = styled.div`
 background-image:url(${(props)=>(props.pict)});
 background-size:cover;
@@ -249,14 +325,13 @@ const Grid = styled.div`
 
 const ProgressBar = styled.div`
 width: 80%;
-height: 100px;
-background-color: black;
+margin-top: 2%;
+
 font-weight: 600;
 font-size: 30px;
 display:flex;
-margin-top:5%;
-align-items:center;
-
+align-items:flex-start;
+display:flex;
 `
 const Half = styled.div`
 width:50%;
@@ -269,7 +344,7 @@ flex-direction:column;
 
 const Progress = styled.div`
     width: ${(props)=> (props.percent)}%;  
-    height: 100px;
+    height: 30px;
     padding: 0;
     text-align: center;
     background-color: #4F98FF;
@@ -293,7 +368,18 @@ background-color:white;
 `
 const Progress2 = styled.div`
 width: ${(props)=> (props.percent)}%;  
-    height: 100px;
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    background-color: gray;
+    color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+`
+const Progress3 = styled.div`
+width: ${(props)=> (props.percent)}%;  
+    height: 30px;
     padding: 0;
     text-align: center;
     background-color: black;
@@ -316,11 +402,16 @@ align-items:center;
 margin: 20px;
 `
 const Flex2 = styled.div`
+background:#FFFFFF;
+grid-column:2/4;
 display:flex;
-justify-content:space-around;
+justify-content:center;
 align-items:center;
-width:100%;
-margin-top:10px;
+z-index:99;
+
+
+border-radius:15px;
+flex-direction:column;
 `
 const DetailHead = styled.div`
 display:flex;
@@ -341,6 +432,7 @@ align-items:center;
 display:flex;
 font-size:18px;
 font-weight:700;
+color:${(props)=> (props.color)};  
 `
 const DetailHeadText2 = styled.div`
 justify-content:center;
@@ -350,6 +442,8 @@ font-size:30px;
 padding-left:10px;
 font-weight:700;
 color:red;
+margin-right:10px;
+color:${(props)=> (props.color)};  
 `
 
 const DetailImage = styled.img`

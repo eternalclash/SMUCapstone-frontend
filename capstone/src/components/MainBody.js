@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect,useCallback } from 'react'
 import styled from 'styled-components'
 import SearchBar from './SearchBar'
 import SearchModal from './SearchModal'
@@ -10,32 +10,75 @@ const MainBody = () => {
   console.log(modal)
   const [keyword, setKeyword] = useState("")
   const navigate = useNavigate()
-  const [data, setData] = useState("hi")
+  const [data, setData] = useState([])
  
-  useEffect(() => {
-      const fetch = async () => {
-        try {
-     
-          const response = await axios.get(
-            `http://34.64.56.32:5000/youtubers`, null, {
-              headers: {
+ // useEffect(() => {
+  //     const fetch = async () => {
+  //       try {
+      
+  //         const response = await axios.get(
+  //           `http://34.64.56.32:5000/channels2?q=${keyword}&maxResults=5`, null, {
+  //             headers: {
                
-                "Access-Control-Allow-Origin":"*",
-              }
-            }
-            , 
-          )
-          console.log(response.data)
+  //               "Access-Control-Allow-Origin":"*",
+  //             }
+  //           }
+  //           , 
+  //         )
+  //         console.log(response.data)
           
-          setData(response.data.result)
-          console.log(data)
+  //         setData(response.data.items)
+        
+  //       }
+  //      catch (error) {
+  //         console.log(error)
+  //       }
+  //     }
+  //       fetch();
+  // }, [keyword])
+  function keyboardCheck () {
+      
+
+    
+        const fetch = async () => {
+          try {
+        
+            const response = await axios.get(
+              `http://34.64.56.32:5000/channels?q=${keyword}&maxResults=5`, null, {
+                headers: {
+                 
+                  "Access-Control-Allow-Origin":"*",
+                }
+              }
+              , 
+            )
+            console.log(response.data)
+            
+            setData(response.data.items)
+          
+          }
+         catch (error) {
+            console.log(error)
+          }
         }
-       catch (error) {
-          console.log(error)
-        }
-      }
-        fetch();
-  }, [keyword])
+    fetch()
+      
+  }
+  const useDebouncedEffect = (func,delay, deps) => {
+    console.log("빙빙")
+    const callback = useCallback(func,deps)
+    useEffect(()=>{
+      const timer = setTimeout(()=>{
+        callback()
+      },delay);
+    return () => {
+      clearTimeout(timer);
+    }
+    },[callback,delay])
+    console.log("끝")
+  }
+  useDebouncedEffect(keyboardCheck,800,[keyword])
+ 
   return (
     <Main onClick={() => 
       modal==true && setModal(false)
@@ -45,7 +88,10 @@ const MainBody = () => {
       <Search onClick={()=>setModal(!modal)}>
           <div style={{display:"flex",width:"80%",alignItems:"center"}}>
           
-          <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>setKeyword(e.target.value)}/>
+          <SearchInput placeholder='분석하고 싶은 유튜브 채널이름을 검색해주세요' onChange={(e)=>
+          
+            setKeyword(e.target.value)
+            }/>
           </div>
         
           <SearchButton onClick={()=>navigate("/search")}><Icon src={SearchIcon} /></SearchButton>
@@ -53,18 +99,18 @@ const MainBody = () => {
      
       {
         modal ?      <Box>
-        {data ? <div>{
+        {data.length>1 ? <div>{
             data.map((e,index) => {
                  return (
                    <Flex key={index} onClick={() => navigate('/search', {
                      state: {
-                         youtubers: e.id,
+                         youtubers: e.channelId,
                          channelName: e.channel,
                          thumbnail:e.profile
                        }
                      })}>
-                         <img referrerPolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.profile}/>
-                         {e.channel}
+                         <img referrerPolicy="no-referrer" style={{ "width": 60, "height": 60, "borderRadius": 30, "marginRight": 20}} src={e.thumbnail}/>
+                         {e.channelname}
                          </Flex>
               )
           })  
