@@ -258,7 +258,7 @@ margin={2}
                     구간에 대한 댓글
                     </DetailHeadText>
                       </Flex>
-                      <div style={{width:"100%",height:"80em"}}>
+                      <div style={{width:"100%",height:"50%",overflow:"scroll",overflowX: "hidden"}}>
                       {  
                               
                 
